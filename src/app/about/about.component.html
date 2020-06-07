@@ -68,14 +68,10 @@
             <div fxLayout="column">
                 <mat-list *ngIf="leaders">
                     <mat-list-item *ngFor="let leader of leaders">
-                        <div fxFlex="10">
-                            <p mat-line><img src="{{leader.image}}" alt="{{leader.name}}"></p>
-                        </div>
-                        <div fxFlex="90">
-                            <p mat-line>{{leader.name}} {{leader.abbr}}</p>
-                            <p mat-line>{{leader.designation}}</p>
-                            <p mat-line>{{leader.description}}</p>
-                        </div>
+                        <img mat-list-avatar src="{{leader.image}}" alt="{{leader.name}}">
+                        <h1 mat-line>{{leader.name}}</h1>        
+                        <p mat-line>{{leader.designation}}</p>
+                        <p mat-line>{{leader.description}}</p>            
                     </mat-list-item>
                 </mat-list>              
         </div>

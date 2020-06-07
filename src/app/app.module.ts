@@ -6,6 +6,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -24,6 +25,7 @@ import { AboutComponent } from './about/about.component';
 import { DishService } from './services/dish.service';
 import { PromotionService } from './services/promotion.service';
 import { LeaderService } from './services/leader.service';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { LeaderService } from './services/leader.service';
     HeaderComponent,
     HomeComponent,
     ContactComponent,
-    AboutComponent
+    AboutComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -46,12 +49,14 @@ import { LeaderService } from './services/leader.service';
     MatButtonModule,
     MatGridListModule,
     FlexLayoutModule,
+    MatDialogModule
   ],
   providers: [
     DishService,
     PromotionService,
     LeaderService
   ],
+  entryComponents: [ LoginComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
