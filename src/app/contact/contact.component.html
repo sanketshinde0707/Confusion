@@ -40,11 +40,11 @@
 
     </div>
 
-    <div fxFlex fxFlexOffset="20px" class="form-size">
+    <div fxFlex fxFlexOffset="20px" class="form-size" [@expand]>
         <hr>
         <h3> Send us your Feedback </h3>
         <p> {{ feedbackForm.value | json }} {{ feedbackForm.status | json }} </p>
-        <form novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()"> <!--we are tying the reactive form in the template file to the corresponding form model in the typescript file-->
+        <form novalidate [hidden]="feedback || feedbackErrMess" [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()" > <!--we are tying the reactive form in the template file to the corresponding form model in the typescript file-->
             <p>
                 <mat-form-field class="half-width">
                     <input matInput formControlName="firstname" placeholder="First Name" type="text" required>  
@@ -67,7 +67,7 @@
                     </mat-error>  
                 </mat-form-field>
                 <mat-form-field class="half-width">
-                    <input matInput formControlName="telnum" placeholder="Tel. Num" type="tel" pattern="[0-9]*" required>
+                    <input matInput formControlName="telnum" placeholder="Tel. Num" type="tel" required>
                     <mat-error *ngIf="formErrors.telenum" >
                         {{ formErrors.telenum }}
                     </mat-error>
@@ -94,8 +94,27 @@
 
             <button type="submit" mat-button class="background-primary text-floral-white" 
             [disabled]="feedbackForm.invalid" > Submit </button>
-            
+
         </form>
+        
+        <div *ngIf="feedback" [hidden]="feedbackFormCopy || feedbackErrMess"> <!--it will be hidden till we submit and make the feedback , and after that it will hide becauze we have the feedbackFormCopy after that -->
+            <h2>Submitting form</h2>
+            <mat-spinner></mat-spinner>
+        </div>
+        <div *ngIf="feedbackFormCopy" [@expand]> <!--when the updated feedback is available from the server then we will show this div-->
+            <p>First Name: {{feedbackFormCopy.firstname}}</p>
+            <p>Last Name: {{feedbackFormCopy.lastname}}</p>
+            <p>Tel. Number: {{feedbackFormCopy.telnum}}</p>
+            <p>Email : {{feedbackFormCopy.email}}</p>
+            <p>Contact You ?: {{feedbackFormCopy.agree}}</p>
+            <p>How? : {{feedbackFormCopy.contacttype}}</p>
+            <p>Feedback : {{feedbackFormCopy.message}}</p>
+        </div>
+        <div *ngIf="feedbackErrMess">
+            <h2>Error</h2>
+            <h4>{{feedbackErrMess}}</h4>
+        </div>
+        
     </div>
 
 </div>

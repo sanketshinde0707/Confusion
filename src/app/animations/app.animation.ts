@@ -12,7 +12,7 @@ export function visibility() {
                 opacity: 0,
                 })),
                 transition('* => *', animate('0.5s ease-in-out')) 
-                //transition(from state 1 => to state 2 , animate('time and animation'))
+                //transition(from state  1 => to state 2 , animate('time and animation'))
             ])
 }   
 

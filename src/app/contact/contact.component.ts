@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Feedback, ContactType } from '../shared/feedback';
-import { flyInOut } from '../animations/app.animation';
+import { FeedbackService } from '../services/feedback.service';
+import { flyInOut, expand } from '../animations/app.animation';
 
 @Component({
   selector: 'app-contact',
@@ -9,16 +10,19 @@ import { flyInOut } from '../animations/app.animation';
   styleUrls: ['./contact.component.scss'],
   host: {
     '[@flyInOut]': 'true',
-    'style': 'display: block'
+    'style': 'display: '
   },
   animations: [
-    flyInOut()
+    flyInOut(),
+    expand(),
   ]
 })
 export class ContactComponent implements OnInit {
 
   feedbackForm: FormGroup; /*This is the form model which will host the reactive form */
   feedback: Feedback; /*This is the data model , we an fetch data from data model thru thus*/
+  feedbackFormCopy: Feedback; /*this is a copy of the feedback */
+  feedbackErrMess: string;
   contactType = ContactType;
   @ViewChild('fform') feedbackFormDirective;
 
@@ -50,7 +54,8 @@ export class ContactComponent implements OnInit {
     }
   }
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+    private feedbackService: FeedbackService) {
     this.createForm(); /* when this class is buit this form will be created*/
    }
 
@@ -62,7 +67,7 @@ export class ContactComponent implements OnInit {
     this.feedbackForm = this.fb.group({
       firstname: ['', [Validators.required,Validators.minLength(2),Validators.maxLength(25)]],
       lastname: ['', [Validators.required,Validators.minLength(2),Validators.maxLength(25)]],
-      telnum: [0, [Validators.required,Validators.pattern]],
+      telnum: [0, [Validators.required,Validators.pattern('[0-9]*')]],
       email: ['', [Validators.required,Validators.email]],
       agree: false,
       contacttype: 'None',
@@ -98,10 +103,26 @@ export class ContactComponent implements OnInit {
   }
 
   onSubmit() {
-    this.feedback = this.feedbackForm.value /* this gives a javascript object */
+    this.feedback = this.feedbackForm.value; /* this gives a javascript object */
     /* here the data model and the form model happens to be same so i can directly 
     map the form model to data model . */
     console.log(this.feedback);
+    this.feedbackService.submitFeedback(this.feedback)
+            .subscribe(feedbackfromserver => {this.feedbackFormCopy = feedbackfromserver } ,
+              errmess =>{
+                this.feedback = null;
+                this.feedbackFormCopy = null;
+                this.feedbackErrMess = <any>errmess;
+              });
+    /*The feedback form is visible as long as we dont click sumbit , as we click it , the form should disappear
+       therefore ( [hidden]="feedback") and after it is created it disappers the form , after that the spinner is visible as long as 
+       we dont have thr feedbackFormCopy(from server) and just after the feedback is created , and then when feedbackFormCopy is available
+       it is shown */
+    setTimeout( () => {
+      console.log("After 5 seconds");
+      this.feedback = undefined;  /*we do this , so that the feedbackFormCopy div becomes invalid , */
+      this.feedbackFormCopy = undefined; /*  and then the fedback becomes invalid so that the feedback form div is visible again */
+    }, 5000)        
     this.feedbackForm.reset({
       firstname: '',
       lastname: '',
@@ -112,6 +133,8 @@ export class ContactComponent implements OnInit {
       message: '',
     });
     this.feedbackFormDirective.resetForm();
+    console.log(this.feedback);
+    
   }
 
 }
